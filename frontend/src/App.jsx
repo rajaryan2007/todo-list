@@ -8,30 +8,30 @@ function App() {
   const [Todos, setTodos] = useState([]);
 
   // Fetch all todos from MongoDB when page loads
-  useEffect(() => {
-    axios.get('/api/todos')
-      .then(res => setTodos(res.data))
-      .catch(err => console.error("Error fetching todos:", err));
-  }, []);
+ useEffect(() => {
+  axios.get('https://todo-list-2-00a4.onrender.com/api/todos')
+    .then(res => setTodos(res.data))
+    .catch(err => console.error("Error fetching todos:", err));
+}, []);
 
-  const handleAdd = () => {
-    if (Todo.trim() !== '') {
-      axios.post('/api/todos', { title: Todo })
-        .then(res => {
-          setTodos([...Todos, res.data]);
-          setTodo('');
-        })
-        .catch(err => console.error("Error adding todo:", err));
-    }
-  };
-
-  const handleDelete = (id) => {
-    axios.delete(`/api/todos/${id}`)
-      .then(() => {
-        setTodos(Todos.filter(todo => todo._id !== id));
+const handleAdd = () => {
+  if (Todo.trim() !== '') {
+    axios.post('https://todo-list-2-00a4.onrender.com/api/todos', { title: Todo })
+      .then(res => {
+        setTodos([...Todos, res.data]);
+        setTodo('');
       })
-      .catch(err => console.error("Error deleting todo:", err));
-  };
+      .catch(err => console.error("Error adding todo:", err));
+  }
+};
+
+const handleDelete = (id) => {
+  axios.delete(`https://todo-list-2-00a4.onrender.com/api/todos/${id}`)
+    .then(() => {
+      setTodos(Todos.filter(todo => todo._id !== id));
+    })
+    .catch(err => console.error("Error deleting todo:", err));
+};
 
   const handleEdit = (todo) => {
     setTodo(todo.title);
