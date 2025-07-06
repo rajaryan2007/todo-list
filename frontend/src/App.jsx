@@ -7,10 +7,10 @@ function App() {
   const [Todo, setTodo] = useState('');
   const [Todos, setTodos] = useState([]);
 
-  // Base URL for backend
+  
   const BASE_URL = 'https://todo-list-2-00a4.onrender.com/api/todos';
 
-  // ✅ Fetch all todos on mount
+  
   useEffect(() => {
     axios.get(BASE_URL)
       .then(res => {
@@ -21,7 +21,7 @@ function App() {
       });
   }, []);
 
-  // ✅ Add new todo
+
   const handleAdd = () => {
     const trimmed = Todo.trim();
     if (trimmed !== '') {
@@ -39,7 +39,6 @@ function App() {
     }
   };
 
-  // ✅ Delete todo
   const handleDelete = (id) => {
     axios.delete(`${BASE_URL}/${id}`)
       .then(() => {
@@ -50,10 +49,10 @@ function App() {
       });
   };
 
-  // ✅ Edit (basic: prefill input then delete)
+ 
   const handleEdit = (todo) => {
     setTodo(todo.title);
-    handleDelete(todo._id); // Optional: Better to make a PUT API
+    handleDelete(todo._id); 
   };
 
   return (
