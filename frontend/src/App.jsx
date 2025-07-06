@@ -7,39 +7,53 @@ function App() {
   const [Todo, setTodo] = useState('');
   const [Todos, setTodos] = useState([]);
 
-  // Fetch all todos from MongoDB when page loads
- useEffect(() => {
-  axios.get('https://todo-list-2-00a4.onrender.com/api/todos')
-    .then(res => setTodos(res.data))
-    .catch(err => console.error("Error fetching todos:", err));
-}, []);
+  // Base URL for backend
+  const BASE_URL = 'https://todo-list-2-00a4.onrender.com/api/todos';
 
-const handleAdd = () => {
-  if (Todo.trim() !== '') {
-    axios.post('https://todo-list-2-00a4.onrender.com/api/todos', { title: Todo })
+  // ✅ Fetch all todos on mount
+  useEffect(() => {
+    axios.get(BASE_URL)
       .then(res => {
-        setTodos([...Todos, res.data]);
-        setTodo('');
+        setTodos(res.data);
       })
-      .catch(err => console.error("Error adding todo:", err));
-  }
-};
+      .catch(err => {
+        console.error("Error fetching todos:", err.response?.data || err.message);
+      });
+  }, []);
 
-const handleDelete = (id) => {
-  axios.delete(`https://todo-list-2-00a4.onrender.com/api/todos/${id}`)
-    .then(() => {
-      setTodos(Todos.filter(todo => todo._id !== id));
-    })
-    .catch(err => console.error("Error deleting todo:", err));
-};
-
-  const handleEdit = (todo) => {
-    setTodo(todo.title);
-    handleDelete(todo._id); // OR write an update API instead
+  // ✅ Add new todo
+  const handleAdd = () => {
+    const trimmed = Todo.trim();
+    if (trimmed !== '') {
+      console.log("Adding todo:", trimmed); // Debug
+      axios.post(BASE_URL, { title: trimmed })
+        .then(res => {
+          setTodos([...Todos, res.data]);
+          setTodo('');
+        })
+        .catch(err => {
+          console.error("Error adding todo:", err.response?.data || err.message);
+        });
+    } else {
+      console.warn("Empty todo not allowed.");
+    }
   };
 
-  const handleChange = (e) => {
-    setTodo(e.target.value);
+  // ✅ Delete todo
+  const handleDelete = (id) => {
+    axios.delete(`${BASE_URL}/${id}`)
+      .then(() => {
+        setTodos(Todos.filter(todo => todo._id !== id));
+      })
+      .catch(err => {
+        console.error("Error deleting todo:", err.response?.data || err.message);
+      });
+  };
+
+  // ✅ Edit (basic: prefill input then delete)
+  const handleEdit = (todo) => {
+    setTodo(todo.title);
+    handleDelete(todo._id); // Optional: Better to make a PUT API
   };
 
   return (
@@ -50,7 +64,7 @@ const handleDelete = (id) => {
 
         <div>
           <input
-            onChange={handleChange}
+            onChange={(e) => setTodo(e.target.value)}
             value={Todo}
             className="bg-red-50 w-117 p-3 py-1 rounded-2xl"
             type="text"
@@ -58,7 +72,7 @@ const handleDelete = (id) => {
           />
           <button
             onClick={handleAdd}
-            className="cursor-pointer m-2 p-2 py-0.5 rounded bg-red-600 hover:bg-red-900"
+            className="cursor-pointer m-2 p-2 py-0.5 rounded bg-red-600 hover:bg-red-900 text-white"
           >
             ADD
           </button>
@@ -70,13 +84,13 @@ const handleDelete = (id) => {
             <div className="flex gap-1.5">
               <button
                 onClick={() => handleEdit(item)}
-                className="cursor-pointer bg-amber-950 p-3 py-1 rounded"
+                className="cursor-pointer bg-amber-950 p-3 py-1 rounded text-white"
               >
                 Edit
               </button>
               <button
                 onClick={() => handleDelete(item._id)}
-                className="cursor-pointer bg-amber-950 p-3 py-1 rounded"
+                className="cursor-pointer bg-amber-950 p-3 py-1 rounded text-white"
               >
                 Delete
               </button>
