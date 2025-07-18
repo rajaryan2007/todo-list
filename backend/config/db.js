@@ -1,5 +1,3 @@
-
-module.exports = connectDB;
 const mongoose = require('mongoose');
 
 const connectDB = async () => {
@@ -11,7 +9,7 @@ const connectDB = async () => {
     console.log(`✅ MongoDB connected: ${conn.connection.host}`);
   } catch (err) {
     console.error("❌ MongoDB connection failed:", err.message);
-    process.exit(1); // Exit with failure
+    process.exit(1); // Exit the app if DB fails
   }
 };
 
